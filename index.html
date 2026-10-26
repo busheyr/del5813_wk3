@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>DEL5813 — Week 3: Executive Data Strategy &amp; Decision-Making Architecture</title><style>
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 62.5%; height:100%; max-width:100vw; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { margin:0; height:100%; background:#ffffff; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size:1.8rem; line-height:1.8; color:#111; overflow:hidden; position:relative; }
+.background-dots { position:fixed; top:0; right:0; width:60%; opacity:0.15; pointer-events:none; z-index:0; }
+.lesson-shell { height:100%; display:flex; flex-direction:column; position:relative; z-index:1; }
+.lesson-shell__header { padding:1.8rem 3rem; background:#fff; border-bottom:1px solid #ececec; display:flex; align-items:center; justify-content:space-between; gap:2rem; }
+.lesson-shell__title { font-size:2.2rem; font-weight:700; line-height:1.2; }
+.lesson-shell__meta { font-size:1.5rem; color:#555; white-space:nowrap; }
+.lesson-shell__body { flex:1; overflow-y:auto; padding:5rem 0; }
+.lesson-page { width:100%; max-width:104rem; margin:0 auto; padding:0 3.2rem; }
+:root { --space-xs:1.4rem; --space-sm:2.2rem; --space-md:3.4rem; --space-lg:5rem; --space-xl:7rem; --blue:#007CFF; --green:#0b6b3a; --ink:#111; --muted:#60656f; --soft:#f5f8fb; --line:#dde4ee; }
+.lesson-block { margin-block:var(--space-xl); padding:var(--space-lg); background:#fff; border-radius:.8rem; }
+.lesson-block.alt { background:#f7f9fb; box-shadow:0 .4rem 1.6rem rgba(0,0,0,.04); }
+.lesson-block.tint { background:#f4f9ff; box-shadow:0 .4rem 1.6rem rgba(0,0,0,.04); }
+.lesson-block h1 { font-size:4rem; line-height:1.12; margin:0 0 var(--space-sm); }
+.lesson-block h2 { font-size:2.8rem; margin:0 0 var(--space-sm); line-height:1.25; }
+.lesson-block h3 { font-size:2rem; margin:0 0 1rem; line-height:1.35; }
+.lesson-block h4 { font-size:1.8rem; margin:0 0 .6rem; line-height:1.35; }
+.lesson-block p { margin:0 0 var(--space-sm); }
+.lesson-block ul { margin:0 0 var(--space-sm); padding-left:2.4rem; }
+.lesson-block li { margin:.6rem 0; }
+.cover-screen { position:fixed; inset:0; background:#fff; z-index:5000; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:2rem; transition:opacity .35s ease, visibility .35s ease; }
+.cover-screen.hidden { opacity:0; visibility:hidden; }
+.cover-title { font-size:3.6rem; line-height:1.15; font-weight:750; margin-bottom:3rem; max-width:78rem; }
+.cover-btn { padding:1.2rem 2.4rem; font-size:1.8rem; border-radius:.6rem; border:0; background:var(--blue); color:#fff; cursor:pointer; font-weight:700; transition:background .2s ease; }
+.cover-btn:hover { background:#0066d1; }
+.hero { border-top:.8rem solid var(--blue); background:linear-gradient(180deg,#fff,#f7fbff); }
+.callout { border-left:.6rem solid var(--blue); padding:1.8rem 2.2rem; background:#f4f9ff; border-radius:.4rem; margin:var(--space-sm) 0; font-weight:650; }
+.callout2 { text-align:center; font-size:2.3rem; line-height:1.6; color:#1a1a1a; max-width:76rem; margin:3.6rem auto; padding:2rem 1rem; position:relative; }
+.callout2::before { content:""; width:6rem; height:.3rem; background:var(--green); border-radius:1rem; display:block; margin:0 auto 2rem; }
+.circle-list { padding-left:0 !important; list-style:none; margin-top:2rem; display:grid; gap:1.2rem; }
+.circle-list li { display:flex; align-items:center; margin:0; }
+.circle-num { width:3.2rem; height:3.2rem; border-radius:50%; background:var(--blue); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; margin-right:1rem; flex:0 0 auto; }
+.split { display:grid; grid-template-columns:minmax(0,1fr) minmax(28rem,.8fr); gap:3rem; align-items:start; }
+.panel { border:1px solid var(--line); border-radius:.8rem; padding:2.2rem; background:#fff; }
+.panel.green { border-left:.5rem solid var(--green); }
+.grid-3, .grid-4, .grid-2 { display:grid; gap:1.8rem; margin-top:2rem; }
+.grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.grid-4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.mini-card { border:1px solid var(--line); border-radius:.8rem; padding:2rem; background:#fff; min-height:100%; }
+.mini-card h3, .mini-card h4 { color:#0d3155; }
+.reveal-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(23rem,1fr)); gap:1.6rem; margin-top:2rem; }
+.reveal-card { border:1px solid var(--line); border-radius:.8rem; background:#fff; overflow:hidden; }
+.reveal-btn { width:100%; border:0; background:#eef6ff; color:#10243a; padding:1.6rem; font-size:1.8rem; font-weight:700; text-align:left; cursor:pointer; }
+.reveal-content { display:none; padding:1.8rem; }
+.reveal-card.open .reveal-content { display:block; }
+.accordion { border:1px solid #d9e1ea; border-radius:.8rem; overflow:hidden; background:#fff; }
+.accordion-item + .accordion-item { border-top:1px solid #d9e1ea; }
+.accordion-header { background:#f7f9fb; padding:1.6rem 1.8rem; cursor:pointer; font-size:1.8rem; font-weight:700; }
+.accordion-content { display:none; padding:1.8rem; background:#fff; }
+.accordion-item.open .accordion-content { display:block; }
+.lesson-tabs { display:flex; flex-wrap:wrap; gap:1rem; margin-top:1.6rem; }
+.tab-btn { padding:.9rem 1.5rem; border-radius:.7rem; border:1px solid #cbd7e5; background:#fff; cursor:pointer; font-size:1.6rem; font-weight:650; }
+.tab-btn.active { background:#eaf4ff; border-color:#7dbaff; color:#07315b; }
+.tab-content { display:none; margin-top:1.8rem; }
+.tab-content.active { display:block; }
+.card-sequence { position:relative; margin:3rem auto; width:100%; max-width:82rem; }
+.card-sequence::before { content:""; position:absolute; left:2rem; top:0; width:2px; height:100%; background:#d9e1ea; z-index:0; }
+.sequence-card { position:relative; background:#fff; border-radius:.8rem; padding:2.2rem 2.6rem; margin:2.4rem 0 2.4rem 4rem; box-shadow:0 4px 18px rgba(0,0,0,.07); border-left:.4rem solid var(--green); z-index:2; }
+.sequence-date { color:var(--green); font-weight:800; font-size:1.6rem; margin-bottom:.6rem; }
+.choice-block { display:grid; grid-template-columns:28rem 1fr; gap:2rem; align-items:start; }
+.choice-menu { display:grid; gap:1rem; }
+.choice-btn { border:1px solid #cbd7e5; background:#fff; text-align:left; padding:1.4rem 1.6rem; border-radius:.7rem; font-size:1.65rem; font-weight:700; cursor:pointer; }
+.choice-btn.active { border-color:var(--blue); background:#eaf4ff; }
+.choice-panel { display:none; }
+.choice-panel.active { display:block; }
+.comparison { display:grid; grid-template-columns:1fr 1fr; gap:1.8rem; margin-top:2rem; }
+.comparison .panel:first-child { border-top:.5rem solid #7a8a9a; }
+.comparison .panel:last-child { border-top:.5rem solid var(--green); }
+.quote-line { border-block:1px solid var(--line); padding:2.4rem 0; font-weight:700; color:#1b2d40; }
+.section-divider { text-align:center; background:#fff; border-top:.6rem solid var(--green); box-shadow:0 .4rem 1.6rem rgba(0,0,0,.04); }
+.section-divider h2 { margin-bottom:0; }
+.continue-wrap { width:100%; margin:3rem 0; }
+.continue-btn { width:100%; border:0; border-radius:.8rem; background:#006649; color:#fff; min-height:6.4rem; font-size:1.9rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 .4rem 1.6rem rgba(0,102,73,.18); transition:background .2s ease, transform .2s ease; }
+.continue-btn:hover { background:#00563e; transform:translateY(-1px); }
+.continue-btn:focus-visible { outline:.3rem solid #7dbaff; outline-offset:.3rem; }
+.template-note { color:var(--muted); font-size:1.6rem; }
+.code-note { display:block; margin-top:1rem; padding:1.4rem 1.6rem; border:1px dashed #cbd7e5; border-radius:.8rem; background:#fbfdff; color:#425466; font-size:1.55rem; }
+@media (max-width:850px) {
+  .lesson-shell__header { align-items:flex-start; flex-direction:column; }
+  .split, .grid-2, .grid-3, .grid-4, .choice-block, .comparison { grid-template-columns:1fr; }
+  .lesson-block { padding:3rem 2rem; margin-block:4rem; }
+  .lesson-page { padding:0 1.8rem; }
+}
+.primary,.cover-btn{padding:1.15rem 2rem;border:0;border-radius:.6rem;background:var(--blue);color:#fff;cursor:pointer;font-size:1.7rem;font-weight:700}.primary:hover,.cover-btn:hover{background:#0066d1}.secondary{padding:1rem 1.5rem;border:1px solid #aebdcd;border-radius:.6rem;background:#fff;cursor:pointer;font-size:1.6rem;font-weight:650}.options{display:grid;gap:1rem;margin:2rem 0}.option{display:flex;gap:1rem;align-items:flex-start;border:1px solid var(--line);border-radius:.7rem;background:#fff;padding:1.3rem 1.5rem;cursor:pointer}.option:hover{border-color:#7dbaff}.option input{margin-top:.55rem;accent-color:var(--blue)}.feedback{display:none;margin-top:1.6rem;padding:1.4rem 1.6rem;border-radius:.6rem;font-weight:650}.feedback.show{display:block}.feedback.correct{background:#e7f6ed;color:#07562d;border-left:.5rem solid var(--green)}.feedback.incorrect{background:#fff0f0;color:#7c1e1e;border-left:.5rem solid var(--red)}.assessment-actions{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.8rem}
+:root{--blue:#006bdb;--red:#a32626}body{height:auto;overflow:auto}.lesson-shell{height:auto;min-height:100vh}.lesson-shell__body{overflow:visible;padding:2rem 0}.lesson-block{margin-block:4rem}button,textarea{font:inherit}:focus-visible{outline:3px solid #006bdb;outline-offset:4px}.lesson-nav{display:flex;flex-wrap:wrap;gap:1rem 2rem;margin-top:2rem}.lesson-nav a{color:#075594;font-size:1.6rem}.eyebrow{font-size:1.5rem;color:#536477;font-weight:700}.circle-list li{align-items:flex-start}.circle-num{margin-top:.4rem}.dimension{margin:2rem 0}.dimension summary{padding:1.4rem 1.8rem;background:#eef6ff;font-weight:650;cursor:pointer}.dimension details p{padding:1.8rem;margin:0}.dimension h3{color:#0d3155}.reflection{margin:2.5rem 0}.reflection label{display:block;margin-bottom:1rem}.reflection textarea{width:100%;min-height:15rem;resize:vertical;padding:1.5rem;border:1px solid #aebdcd;border-radius:.6rem;background:white;color:#111}.assessment+.assessment{border-top:1px solid var(--line);padding-top:3rem;margin-top:3rem}fieldset{border:0;padding:0;margin:0;min-width:0}legend{font-weight:650;padding:0}.skip-link{position:absolute;top:-10rem;left:1rem;background:white;padding:1rem;z-index:10}.skip-link:focus{top:1rem}.mini-card h3{font-size:1.9rem}.notes-status{min-height:2rem;font-size:1.6rem;color:#07562d}@media(max-width:850px){.lesson-block h1{font-size:3.2rem}.lesson-shell__meta{white-space:normal}}@media print{body{font-size:12pt}.lesson-block{padding:1rem;margin:2rem 0;break-inside:avoid}.lesson-nav,.assessment-actions,.check,.skip-link{display:none}details::details-content{display:block}.reflection textarea{min-height:12rem}}
+
+.match-card{margin:2rem 0;padding:2.2rem;border:1px solid var(--line);border-radius:.8rem;background:white}.match-card label{display:block;font-weight:650;margin-bottom:1rem}.match-card select{width:100%;font:inherit;padding:1rem;border:1px solid #aebdcd;border-radius:.5rem;background:white}.match-card .feedback{font-size:1.65rem}.framework-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.8rem}.framework-grid .mini-card{border-top:4px solid var(--blue)}.framework-grid .mini-card:nth-child(2){border-color:#0b6b3a}.framework-grid .mini-card:nth-child(3){border-color:#84521d}.framework-grid .mini-card:nth-child(4){border-color:#7758a0}.comparison ul{margin-bottom:0}.comparison h3{margin-bottom:2rem}.skill-section{margin:2.2rem 0}.skill-section h3{color:#0d3155}@media(max-width:850px){.framework-grid{grid-template-columns:1fr}}
+
+.framework{margin:2rem 0}.framework h3{color:#0d3155}.risk{margin:2rem 0;padding:2.4rem;background:white;border:1px solid var(--line);border-radius:.8rem}.risk legend{font-weight:700;color:#0d3155;font-size:2rem}.risk fieldset{margin-top:2rem}.risk .option{font-size:1.65rem}.risk .feedback{font-size:1.65rem}.governance details{border:1px solid var(--line);border-radius:.8rem;background:white;margin:1.6rem 0}.governance summary{padding:1.8rem;cursor:pointer;font-weight:700}.governance details p{padding:0 1.8rem 1.8rem;margin:0}.match-summary{font-weight:650;color:#07562d}.reference-heading{font-size:1.5rem;color:#536477;margin-bottom:1rem}.primary:disabled{opacity:.6;cursor:default}@media print{.risk{break-inside:avoid}.governance details::details-content{display:block}}
+
+.factory-map{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin:2rem 0}.factory-map article{background:#eaf4ff;border-top:4px solid var(--blue);padding:1.5rem;font-size:1.55rem}.factory-map h4{font-size:1.6rem}.factory-map p{margin:0}.factory-detail{margin:1.5rem 0;border:1px solid var(--line);border-radius:.8rem;background:#fff}.factory-detail summary{cursor:pointer;font-weight:700;padding:1.7rem;color:#0d3155}.factory-detail .detail-body{padding:0 1.7rem 1.7rem}.protocol{padding:1.8rem;background:#eaf4ff;border-left:5px solid var(--blue);margin:2rem 0}.risk-columns{display:grid;grid-template-columns:1fr 1fr;gap:2rem}.risk-columns li{margin-bottom:1.8rem}.control{margin:1.4rem 0;padding:1.8rem;background:white;border-left:4px solid var(--green)}@media(max-width:850px){.factory-map,.risk-columns{grid-template-columns:1fr}}
+</style></head><body><a class="skip-link" href="#section-1">Skip to content</a><div class="lesson-shell"><header class="lesson-shell__header"><div class="lesson-shell__title">DEL 5813: Week 3</div><div class="lesson-shell__meta">Executive Data Strategy</div></header><main class="lesson-shell__body"><div class="lesson-page"><section class="lesson-block hero" id="section-1"><p class="eyebrow">DEL 5813 · Week 3</p><h1>Executive Data Strategy &amp; Decision-Making Architecture</h1><h2>SECTION 1: Course Overview &amp; Learning Roadmap</h2><h3>Module Focus: Transforming Data from Utilities into Executive Decision Engines</h3><p>In digital transformation, data is not an IT side-effect—it is the core strategic driver of C-suite decision-making. This week, we move beyond back-office data management to construct an operational &quot;AI Factory,&quot; while establishing human-in-the-loop governance to mitigate cognitive biases that compromise C-suite judgment.</p><h3>Learning Objectives</h3><ul><li>Analyze organizational data ecosystems to transition raw data into strategic C-suite value drivers.</li><li>Evaluate the operational architecture of an Enterprise AI Factory (data pipelines, algorithms, experimentation platforms).</li><li>Mitigate C-suite cognitive biases and technical failure modes through actionable governance controls.</li></ul><nav class="lesson-nav" aria-label="Sections"><a href="#section-2">Data Value</a><a href="#section-3">AI Factory</a><a href="#section-4">Governance</a><a href="#section-5">Knowledge Check</a></nav></section>
+<section class="lesson-block alt" id="section-2"><h2>SECTION 2: The Data Value Matrix (Rogers Framework)</h2>
+<h3>Lesson 2.1: Transitioning Data into Strategic Enterprise Assets</h3>
+<article class="panel framework"><h3>1. The Data Value-Generator Model</h3><p>Core Concept: Traditional firms view data as a static record of past events (invoices, transaction logs). Digital leaders treat data as an evolving strategic asset that powers real-time prediction, operational agility, and new business models.</p><div class="reflection"><label for="action-0">Executive Action: Identify where raw data streams are sitting in isolated silos across your enterprise and evaluate how they can be unified to power your strategic AI initiative.</label><textarea id="action-0" spellcheck="true"></textarea></div></article>
+<article class="panel framework"><h3>2. Structured vs. Behavioral Unstructured Data</h3><p>Core Concept: Structured data (SQL databases, financial ledgers) tells you what happened. Unstructured behavioral data (customer interaction logs, IoT sensor feeds, real-time audio/text streams) reveals why and how it happened.</p><div class="reflection"><label for="action-1">Executive Action: Identify at least one structured and one unstructured data stream required for model ingestion in Section 1.1 of your Master Playbook Template.</label><textarea id="action-1" spellcheck="true"></textarea></div></article>
+<article class="panel framework"><h3>3. Breaking Down Data Silos</h3><p>Core Concept: Organizational silos create fragmented data ecosystems where departments hoard operational insights. C-suite leaders must establish enterprise-wide data pipelines that democratize access while maintaining security and privacy protocols.</p><div class="reflection"><label for="action-2">Executive Action: Map the organizational resistance and technical friction that prevent cross-departmental data sharing within your target organization.</label><textarea id="action-2" spellcheck="true"></textarea></div></article>
+<p class="template-note">Draft your executive actions above. Responses remain on this page until you close or reload it; download your notes to keep a copy.</p><button type="button" class="primary" id="downloadNotes">Download executive action notes</button><p class="notes-status" id="notesStatus" role="status"></p>
+</section>
+<section class="lesson-block tint" id="section-3"><h2>SECTION 3: The Architecture of the AI Factory (Iansiti &amp; Lakhani Framework)</h2>
+<h3>Lesson 3.1: The 4 Core Components of the AI Factory</h3><p>To scale algorithmic decision-making across an enterprise, organizations must construct a continuous operational engine—the AI Factory.</p><h3>THE AI FACTORY</h3><div class="factory-map">
+<article><h4>1. DATA PIPELINE</h4><p>Clean, ingest, &amp; standard streams</p></article>
+<article><h4>2. ALGORITHMS</h4><p>Train models to predict outcomes</p></article>
+<article><h4>3. EXPERIMENT</h4><p>Test hypotheses &amp; validate accuracy</p></article>
+<article><h4>4. INFRASTRUCTURE</h4><p>Scale</p></article>
+</div>
+<details class="factory-detail"><summary>Data Pipeline</summary><div class="detail-body"><p>Operational Role: The foundational plumbing of the AI Factory. It systematically cleans, normalizes, integrates, and ingests internal and external data streams.</p><p>Pipeline Trade-Offs: C-suite leaders must evaluate Real-Time API Extraction (high infrastructure cost, immediate decision capability) versus Batch ETL Processing (lower cost, delayed insight frequency).</p></div></details>
+<details class="factory-detail"><summary>Algorithm Development</summary><div class="detail-body"><p>Operational Role: The predictive engine where statistical models and machine learning algorithms interpret ingested data to generate predictions, automate workflows, or recommend C-suite decisions.</p><p>Executive Focus: Algorithms are only as robust as their training data. Unvetting input data directly leads to model drift and corrupted predictive outputs.</p></div></details>
+<details class="factory-detail"><summary>Experimentation Platform</summary><div class="detail-body"><p>Operational Role: The testing ground where new algorithms and predictive hypotheses are continuously validated against live operational benchmarks (A/B testing, multi-armed bandit testing).</p><p>Executive Focus: Ensures that model improvements are empirically proven before being deployed into mission-critical operational workflows.</p></div></details>
+<details class="factory-detail"><summary>Infrastructure &amp; Deployment</summary><div class="detail-body"><p>Operational Role: The cloud or hybrid architecture that scales data storage, compute power, and security controls across the enterprise.</p><p>Executive Focus: Balances operational performance with API latency, computational overhead, and cybersecurity guardrails.</p></div></details>
+</section>
+<section class="lesson-block " id="section-4"><h2>SECTION 4: De-Biasing C-Suite Decision-Making (Kahneman et al. Framework)</h2>
+<h3>Lesson 4.1: Human-in-the-Loop Governance &amp; Cognitive Risk Mitigation</h3><p>Algorithms remove human operational fatigue, but they can also amplify systemic biases or create over-reliance. Use this 3-step protocol to establish executive governance.</p><div class="protocol">Step 1: Identify Cognitive Biases ---&gt; Step 2: Pinpoint Technical Failures ---&gt; Step 3: Deploy De-Biasing Controls</div><div class="risk-columns">
+<article class="panel"><h3>Step 1: Identify C-Suite Cognitive Biases</h3><ul><li>Automation Bias: The tendency for executives to uncritically trust algorithmic outputs without questioning underlying data validity.</li><li>Confirmation Bias: Selectively feeding or interpreting model data to support pre-existing executive assumptions or pet projects.</li><li>Anchoring: Over-weighting initial AI predictions during high-stakes strategic decision-making while ignoring evolving contextual variables.</li></ul></article>
+<article class="panel"><h3>Step 2: Pinpoint Technical Pipeline Failure Modes</h3><ul><li>Data Drift: Gradual performance degradation when real-world conditions diverge from model training data.</li><li>Schema Changes &amp; Latency: Technical disruptions in API endpoints or database structures that break data ingestion feeds.</li><li>Model Poisoning: Corrupted input data that skews predictive analytics and leads to faulty enterprise choices.</li></ul></article>
+</div><h3>Step 3: Deploy Human-in-the-Loop De-Biasing Controls</h3>
+<div class="control"><p>Data Lineage Tracking: Maintaining audit trails to verify data source, transformation history, and ingestion timing.</p></div>
+<div class="control"><p>Continuous Auditing Schedules: Establishing mandatory quarterly reviews of algorithm performance, bias metrics, and model outputs.</p></div>
+<div class="control"><p>Explicit Escalation Thresholds: Setting clear operational boundaries where decisions above a specific financial or risk threshold must require human C-suite sign-off.</p></div>
+</section>
+<section class="lesson-block tint" id="section-5"><h2>SECTION 5: Knowledge Check &amp; Applied Capstone Linkage</h2>
+<h3>Knowledge Check</h3><div class="assessment"><fieldset><legend>Question: An executive team notices that their new predictive supply chain model is making increasingly inaccurate inventory recommendations six months after deployment, even though the software itself has no technical bugs. Which phenomenon is most likely occurring?</legend><div class="options">
+<label class="option"><input type="radio" name="knowledge" value="a"><span>A) Automation Bias</span></label>
+<label class="option"><input type="radio" name="knowledge" value="b"><span>B) Data Drift</span></label>
+<label class="option"><input type="radio" name="knowledge" value="c"><span>C) Batch Processing Failure</span></label>
+<label class="option"><input type="radio" name="knowledge" value="d"><span>D) Strategic Anchoring</span></label>
+</div></fieldset><button type="button" class="primary check">Check answer</button><div class="feedback" role="status"></div></div>
+</section></div></main></div><script>
+const correctFeedback="Data drift occurs when real-world conditions diverge from original model training data, degrading predictive accuracy over time.";
+const hints={a:'Automation bias concerns uncritical trust in algorithmic outputs. The question asks what explains declining predictive accuracy over time.',c:'Batch processing determines when data is processed. Consider what can change outside bug-free software after deployment.',d:'Anchoring concerns over-weighting an initial prediction. Focus on the model’s decreasing accuracy as operational conditions change.'};
+const block=document.querySelector('.assessment'),feedback=block.querySelector('.feedback');
+block.querySelector('.check').addEventListener('click',()=>{const selected=block.querySelector('input:checked'),good=selected?.value==='b';feedback.className='feedback show '+(good?'correct':'incorrect');feedback.textContent=!selected?'Select an answer before checking.':good?'Correct! '+correctFeedback:'Not quite. '+hints[selected.value]+' Try again.';});
+block.querySelectorAll('input').forEach(input=>input.addEventListener('change',()=>{feedback.className='feedback';feedback.textContent='';}));
+document.getElementById('downloadNotes').addEventListener('click',()=>{
+ const fields=[...document.querySelectorAll('textarea')],status=document.getElementById('notesStatus');
+ if(!fields.some(field=>field.value.trim())){status.textContent='Write an executive action note before downloading.';fields[0].focus();return;}
+ const text='DEL 5813 — Week 3 Executive Action Notes\n\n'+fields.map(field=>document.querySelector('label[for="'+field.id+'"]').textContent+'\n'+field.value.trim()).join('\n\n');
+ const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='DEL5813-week-3-executive-action-notes.txt';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='Notes downloaded.';
+});
+</script></body></html>
